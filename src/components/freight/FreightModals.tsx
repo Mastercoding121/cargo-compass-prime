@@ -57,7 +57,7 @@ const MODES = {
 export function FreightModalTrigger({ mode, children }: { mode: Mode; children: React.ReactNode }) {
   return (
     <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogClose>
       <FreightModalBody mode={mode} />
     </Dialog>
   );
@@ -80,13 +80,13 @@ function FreightModalBody({ mode }: { mode: Mode }) {
       <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-5">
         <DialogHeader className="space-y-3">
           <div className="flex items-center justify-between">
-            <DialogTrigger asChild>
+            <DialogClose asChild>
               <button
                 className="inline-flex items-center gap-1.5 rounded-md bg-white/15 hover:bg-white/25 px-2.5 py-1 text-xs font-medium border border-white/30 transition"
               >
                 <ArrowLeft className="size-3.5" /> Back to dashboard
               </button>
-            </DialogTrigger>
+            </DialogClose>
             <Badge className="bg-white text-orange-600 hover:bg-white border-0">TRIAL CALC</Badge>
           </div>
           <DialogTitle className="text-white text-xl flex items-center gap-2">
@@ -139,11 +139,11 @@ function FreightModalBody({ mode }: { mode: Mode }) {
           </div>
         </div>
 
-        <DialogTrigger asChild>
+        <DialogClose asChild>
           <Button variant="outline" className="w-full border-orange-300 text-orange-700 hover:bg-orange-50 gap-2">
             <ArrowLeft className="size-4" /> Back to dashboard
           </Button>
-        </DialogTrigger>
+        </DialogClose>
       </div>
     </DialogContent>
   );
