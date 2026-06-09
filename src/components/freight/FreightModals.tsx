@@ -57,7 +57,7 @@ const MODES = {
 export function FreightModalTrigger({ mode, children }: { mode: Mode; children: React.ReactNode }) {
   return (
     <Dialog>
-      <DialogTrigger asChild>{children}</DialogClose>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <FreightModalBody mode={mode} />
     </Dialog>
   );
