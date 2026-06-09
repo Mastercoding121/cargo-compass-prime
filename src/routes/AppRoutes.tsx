@@ -1,5 +1,5 @@
 /* ROUTE_GUARDS: Global router wrapper for redirect logic */
-/* This file centralizes all redirect decisions referenced by /* REDIRECT_ACTION: * */ keys. */
+/* This file centralizes all redirect decisions referenced by REDIRECT_ACTION grep keys. */
 import { useEffect } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { getSession, type SessionUser } from "@/lib/auth";
