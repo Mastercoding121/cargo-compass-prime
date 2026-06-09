@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose,
 } from "@/components/ui/dialog";
 import { PRODUCT_FEED, FREIGHT_CLASS_COLOR, type Product1688 } from "@/lib/products";
 import { cnyToNgn, formatCNY, formatNGN } from "@/lib/fx";
