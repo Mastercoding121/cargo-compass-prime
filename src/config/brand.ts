@@ -1,10 +1,11 @@
 /* BRAND_CONFIG: GLOBAL_BRAND_OBJECT */
 export const BRAND = {
-  name: "NEXTGEN SMART DEVICES",
-  shortName: "NextGen",
+  name: "NEXTGEN HUB",
+  shortName: "NextGen Hub",
   currency: "NGN" as "NGN" | "USD",
-  supportEmail: "support@nextgensmartdevices.com",
-  tagline: "Freight Forwarding & Cargo Procurement",
+  supportEmail: "support@nextgenhub.com",
+  tagline: "China Procurement & Freight Forwarding",
+  handlePrefix: "NH",
 } as const;
 
 /* ROUTE_KEY_REGISTRY: All top-level grep keys for route discovery */
