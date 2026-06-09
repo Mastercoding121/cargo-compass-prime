@@ -18,8 +18,8 @@ const HUBS = [
 ];
 
 function Addresses() {
-  const [handle, setHandle] = useState("NG-XXXX-CN");
-  useEffect(() => { setHandle(getSession()?.handleId ?? "NG-XXXX-CN"); }, []);
+  const [handle, setHandle] = useState("NH-XXXX-CN");
+  useEffect(() => { setHandle(getSession()?.handleId ?? "NH-XXXX-CN"); }, []);
 
   function copy(text: string) { navigator.clipboard.writeText(text); }
 

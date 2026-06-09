@@ -21,7 +21,7 @@ const NAV: NavItem[] = [
 ];
 
 const NOTIFICATIONS = [
-  { id: 1, title: "Parcel NG-J-882 arrived Guangzhou hub", time: "2m ago" },
+  { id: 1, title: "Parcel NH-J-882 arrived Guangzhou hub", time: "2m ago" },
   { id: 2, title: "Shipment SH-1042 cleared customs", time: "1h ago" },
   { id: 3, title: "Pre-alert #221 awaiting tracking", time: "3h ago" },
 ];
@@ -121,7 +121,7 @@ export function DashboardShell() {
             title="Click to copy your shipping handle"
           >
             <span className="size-1.5 rounded-full bg-primary animate-pulse" />
-            {user?.handleId ?? "NG-XXXX-CN"}
+            {user?.handleId ?? "NH-XXXX-CN"}
             <Copy className="size-3" />
           </button>
 
