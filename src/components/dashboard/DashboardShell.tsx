@@ -2,7 +2,7 @@ import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-route
 import { useEffect, useState } from "react";
 import { BRAND } from "@/config/brand";
 import { clearSession, getSession, type SessionUser } from "@/lib/auth";
-import { useAuthGuards } from "@/routes/AppRoutes";
+import { useAuthGuards } from "@/lib/router-utils";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";

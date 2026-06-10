@@ -1,16 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { config } from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
 import { db } from "../db-adapter.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-config({ path: path.join(__dirname, "../../../.env.local") });
-
 export const searchProducts = createServerFn({ method: "GET" })
-  .inputValidator(z.object({ q: z.string().min(1) }))
+  .validator(z.object({ q: z.string().min(1) }))
   .handler(async ({ data }) => {
     try {
       // First check db for existing products

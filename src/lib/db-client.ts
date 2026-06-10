@@ -1,12 +1,5 @@
 import { Client, Databases, Query, ID } from "node-appwrite";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
-import { config as dotenvConfig } from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-dotenvConfig({ path: path.join(__dirname, "../../.env.local") });
 
 // Load env vars
 const APPWRITE_ENDPOINT = process.env.APPWRITE_ENDPOINT || "https://cloud.appwrite.io/v1";

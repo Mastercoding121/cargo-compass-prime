@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { mockLogin } from "@/lib/auth";
-import { resolvePostLoginRoute } from "@/routes/AppRoutes";
+import { resolvePostLoginRoute } from "@/lib/router-utils";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: `Sign in — ${BRAND.name}` }] }),
