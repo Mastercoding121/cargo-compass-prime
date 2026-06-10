@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { BRAND } from "@/config/brand";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Package, Users, CreditCard, ArrowRight, PackageSearch } from "lucide-react";
+import { Package, Users, CreditCard, ArrowRight, PackageSearch, Activity } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/")({
@@ -156,6 +156,23 @@ function AdminDashboard() {
               <p className="text-slate-500 mb-4">Review and approve products requested by users</p>
               <Button className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700">
                 Go to Queue <ArrowRight className="h-4 w-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link to="/admin/health">
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer border-indigo-200/50">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Activity className="h-5 w-5 text-indigo-600" />
+                System Health Monitor
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-slate-500 mb-4">View real-time status and failover metrics</p>
+              <Button className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700">
+                Go to Monitor <ArrowRight className="h-4 w-4" />
               </Button>
             </CardContent>
           </Card>

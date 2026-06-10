@@ -28,6 +28,7 @@ import { Route as DashboardAddressesRouteImport } from './routes/dashboard.addre
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminPendingRouteImport } from './routes/admin.pending'
+import { Route as AdminHealthRouteImport } from './routes/admin.health'
 
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
@@ -124,6 +125,11 @@ const AdminPendingRoute = AdminPendingRouteImport.update({
   path: '/pending',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminHealthRoute = AdminHealthRouteImport.update({
+  id: '/health',
+  path: '/health',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -134,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/shop': typeof ShopRoute
+  '/admin/health': typeof AdminHealthRoute
   '/admin/pending': typeof AdminPendingRoute
   '/admin/products': typeof AdminProductsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -153,6 +160,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/shop': typeof ShopRoute
+  '/admin/health': typeof AdminHealthRoute
   '/admin/pending': typeof AdminPendingRoute
   '/admin/products': typeof AdminProductsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -175,6 +183,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/shop': typeof ShopRoute
+  '/admin/health': typeof AdminHealthRoute
   '/admin/pending': typeof AdminPendingRoute
   '/admin/products': typeof AdminProductsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -198,6 +207,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/register'
     | '/shop'
+    | '/admin/health'
     | '/admin/pending'
     | '/admin/products'
     | '/admin/users'
@@ -217,6 +227,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/register'
     | '/shop'
+    | '/admin/health'
     | '/admin/pending'
     | '/admin/products'
     | '/admin/users'
@@ -238,6 +249,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/register'
     | '/shop'
+    | '/admin/health'
     | '/admin/pending'
     | '/admin/products'
     | '/admin/users'
@@ -398,10 +410,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPendingRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/health': {
+      id: '/admin/health'
+      path: '/health'
+      fullPath: '/admin/health'
+      preLoaderRoute: typeof AdminHealthRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminHealthRoute: typeof AdminHealthRoute
   AdminPendingRoute: typeof AdminPendingRoute
   AdminProductsRoute: typeof AdminProductsRoute
   AdminUsersRoute: typeof AdminUsersRoute
@@ -409,6 +429,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminHealthRoute: AdminHealthRoute,
   AdminPendingRoute: AdminPendingRoute,
   AdminProductsRoute: AdminProductsRoute,
   AdminUsersRoute: AdminUsersRoute,
