@@ -6,14 +6,16 @@ import { useAuthGuards } from "@/routes/AppRoutes";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
+import { BottomNav } from "./BottomNav";
 import {
-  LayoutDashboard, PackageSearch, Ship, MapPin, Shield, Bell, LogOut, Menu, X, Copy,
+  LayoutDashboard, Package, PackageSearch, Ship, MapPin, Shield, Bell, LogOut, Menu, X, Copy,
 } from "lucide-react";
 
 type NavItem = { to: string; label: string; icon: React.ComponentType<{ className?: string }>; adminOnly?: boolean };
 
 const NAV: NavItem[] = [
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { to: "/dashboard/orders", label: "My Orders", icon: Package },
   { to: "/dashboard/parcels", label: "Pre-Alerts", icon: PackageSearch },
   { to: "/dashboard/shipments", label: "Consolidation", icon: Ship },
   { to: "/dashboard/addresses", label: "Warehouses", icon: MapPin },
@@ -165,9 +167,10 @@ export function DashboardShell() {
           </div>
         </header>
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-24 lg:pb-8">
           <Outlet />
         </main>
+        <BottomNav />
       </div>
     </div>
   );

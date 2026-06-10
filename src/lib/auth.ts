@@ -1,4 +1,6 @@
 /* AUTH_STATE: Lightweight client-side session for demo routing guards */
+import { supabase } from "./supabase";
+
 export type UserRole = "admin" | "customer";
 export interface SessionUser {
   id: string;
@@ -10,13 +12,39 @@ export interface SessionUser {
 
 const KEY = "ngh_session_v1";
 
-export function getSession(): SessionUser | null {
+export async function getSession(): Promise<SessionUser | null> {
   if (typeof window === "undefined") return null;
   try {
+    // First try Supabase auth
+    const { data, error } = await supabase.auth.getUser();
+    if (error) {
+      // Fallback to localStorage mock
+      const raw = window.localStorage.getItem(KEY);
+      return raw ? (JSON.parse(raw) as SessionUser) : null;
+    }
+    if (data?.user) {
+      // Fetch profile from Supabase to get role and handleId
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", data.user.id)
+        .single();
+      if (!profileError && profile) {
+        return {
+          id: profile.id,
+          email: profile.email,
+          name: profile.name || profile.email.split("@")[0],
+          role: profile.role as UserRole,
+          handleId: profile.handle_id,
+        };
+      }
+    }
+    // Fallback to mock
     const raw = window.localStorage.getItem(KEY);
     return raw ? (JSON.parse(raw) as SessionUser) : null;
   } catch {
-    return null;
+    const raw = window.localStorage.getItem(KEY);
+    return raw ? (JSON.parse(raw) as SessionUser) : null;
   }
 }
 
@@ -28,6 +56,7 @@ export function setSession(u: SessionUser) {
 export function clearSession() {
   window.localStorage.removeItem(KEY);
   window.dispatchEvent(new Event("ngsd:auth"));
+  supabase.auth.signOut();
 }
 
 export function mockLogin(email: string): SessionUser {

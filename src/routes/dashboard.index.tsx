@@ -28,12 +28,19 @@ function DashboardHome() {
             Live products sourced from 1688.com — prices converted from ¥ RMB to ₦ NGN.
           </p>
         </div>
-        <Link to="/dashboard/shipments">
-          <Button className="gap-2">
-            <ShoppingCart className="size-4" /> Cart ({cartCount}) · {formatNGN(cartValue)}
-            <ArrowUpRight className="size-4" />
-          </Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link to="/dashboard/create-order">
+            <Button variant="secondary" className="gap-2">
+              <Package className="size-4" /> Create Order
+            </Button>
+          </Link>
+          <Link to="/dashboard/shipments">
+            <Button className="gap-2">
+              <ShoppingCart className="size-4" /> Cart ({cartCount}) · {formatNGN(cartValue)}
+              <ArrowUpRight className="size-4" />
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Freight calculator triggers */}
