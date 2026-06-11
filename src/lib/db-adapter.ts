@@ -1,6 +1,12 @@
 import { Client, Databases, Query, ID } from "node-appwrite";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
+const APPWRITE_DATABASE_ID = process.env.APPWRITE_DATABASE_ID || "6a289d82001be83823ce";
+const APPWRITE_PRODUCTS_COLLECTION_ID = "6a28a834003b0ab87ba3";
+const APPWRITE_ORDERS_COLLECTION_ID = "6a28a78f003002c27730";
+const APPWRITE_PENDING_QUEUE_COLLECTION_ID = process.env.APPWRITE_PENDING_QUEUE_COLLECTION_ID || "pending_scraping_queue";
+const APPWRITE_LOGS_COLLECTION_ID = process.env.APPWRITE_LOGS_COLLECTION_ID || "system_logs";
+
 // Universal Types
 export interface Product {
   id?: string;
@@ -72,16 +78,16 @@ export interface DBInterface {
 class AppwriteAdapter implements DBInterface {
   private databases: Databases;
   private dbId: string;
-  private productsCollection = "products";
-  private ordersCollection = "orders";
-  private queueCollection = "pending_scraping_queue";
-  private logsCollection = "system_logs";
+  private productsCollection = APPWRITE_PRODUCTS_COLLECTION_ID;
+  private ordersCollection = APPWRITE_ORDERS_COLLECTION_ID;
+  private queueCollection = APPWRITE_PENDING_QUEUE_COLLECTION_ID;
+  private logsCollection = APPWRITE_LOGS_COLLECTION_ID;
 
   constructor() {
     const endpoint = process.env.APPWRITE_ENDPOINT || "https://cloud.appwrite.io/v1";
     const projectId = process.env.APPWRITE_PROJECT_ID || "";
     const apiKey = process.env.APPWRITE_API_KEY || "";
-    this.dbId = process.env.APPWRITE_DATABASE_ID || "";
+    this.dbId = APPWRITE_DATABASE_ID;
 
     const client = new Client()
       .setEndpoint(endpoint)
