@@ -8,10 +8,12 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
+import { BRAND } from "@/config/brand";
 
 function NotFoundComponent() {
   /* REDIRECT_ACTION: FALLBACK_TO_HOME */
@@ -81,18 +83,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Freight Flow is a web application for freight forwarding and cargo procurement." },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Freight Flow is a web application for freight forwarding and cargo procurement." },
+      { title: BRAND.name },
+      { name: "description", content: "NextGen Hub is a web application for autonomous 1688 procurement and freight forwarding." },
+      { name: "author", content: BRAND.name },
+      { property: "og:title", content: BRAND.name },
+      { property: "og:description", content: "NextGen Hub is a web application for autonomous 1688 procurement and freight forwarding." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Lovable App" },
-      { name: "twitter:description", content: "Freight Flow is a web application for freight forwarding and cargo procurement." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4223d50e-cae0-4784-bdb0-3f98cb72b308/id-preview-7788cd79--426896e6-2443-4f09-8dc8-e6107b3b7f2d.lovable.app-1781016444363.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4223d50e-cae0-4784-bdb0-3f98cb72b308/id-preview-7788cd79--426896e6-2443-4f09-8dc8-e6107b3b7f2d.lovable.app-1781016444363.png" },
+      { name: "twitter:title", content: BRAND.name },
+      { name: "twitter:description", content: "NextGen Hub is a web application for autonomous 1688 procurement and freight forwarding." },
     ],
     links: [
       {
@@ -129,6 +128,7 @@ function RootComponent() {
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <Toaster richColors position="top-right" />
+      <SpeedInsights />
     </QueryClientProvider>
   );
 }
