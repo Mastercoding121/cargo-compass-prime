@@ -10,14 +10,14 @@ config({ path: path.join(fileURLToPath(import.meta.url), "../../../.env.local") 
 
 // Initialize Appwrite client
 const client = new Client()
-  .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT || "https://cloud.appwrite.io/v1")
-  .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID)
+  .setEndpoint(process.env.APPWRITE_ENDPOINT || "https://cloud.appwrite.io/v1")
+  .setProject(process.env.APPWRITE_PROJECT_ID)
   .setKey(process.env.APPWRITE_API_KEY);
 
 const databases = new Databases(client);
-const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID;
+const DATABASE_ID = process.env.APPWRITE_DATABASE_ID;
 const PRODUCTS_COLLECTION_ID =
-  process.env.NEXT_PUBLIC_APPWRITE_PRODUCTS_COLLECTION_ID || "products";
+  process.env.APPWRITE_PRODUCTS_COLLECTION_ID || "products";
 const PENDING_QUEUE_COLLECTION_ID = "pending_scraping_queue";
 const SYSTEM_LOGS_COLLECTION_ID = "system_logs";
 

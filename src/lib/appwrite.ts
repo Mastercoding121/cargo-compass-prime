@@ -3,16 +3,16 @@ import { Client, Databases, Query, ID } from "appwrite";
 
 // Environment variables with fallbacks
 export const APPWRITE_ENDPOINT =
-  import.meta.env.NEXT_PUBLIC_APPWRITE_ENDPOINT ||
+  import.meta.env.VITE_APPWRITE_ENDPOINT ||
   "https://cloud.appwrite.io/v1";
 export const APPWRITE_PROJECT_ID =
-  import.meta.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID || "";
+  import.meta.env.VITE_APPWRITE_PROJECT_ID || "";
 export const APPWRITE_DATABASE_ID =
-  import.meta.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || "";
+  import.meta.env.VITE_APPWRITE_DATABASE_ID || "";
 export const APPWRITE_PRODUCTS_COLLECTION_ID =
-  import.meta.env.NEXT_PUBLIC_APPWRITE_PRODUCTS_COLLECTION_ID || "products";
+  import.meta.env.VITE_APPWRITE_PRODUCTS_COLLECTION_ID || "products";
 export const APPWRITE_PENDING_QUEUE_COLLECTION_ID =
-  import.meta.env.NEXT_PUBLIC_APPWRITE_PENDING_QUEUE_COLLECTION_ID || "pending_scraping_queue";
+  import.meta.env.VITE_APPWRITE_PENDING_QUEUE_COLLECTION_ID || "pending_scraping_queue";
 
 // Initialize Appwrite client
 export const createAppwriteClient = () => {
