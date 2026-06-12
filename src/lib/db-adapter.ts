@@ -416,82 +416,34 @@ class SupabaseAdapter implements DBInterface {
   }
 }
 
-// Database Factory with Failover Logic
+// Database Factory (Appwrite only - Supabase paused)
 class DatabaseFactory {
-  private primary: DBInterface;
-  private secondary: DBInterface;
-  private primaryName: "appwrite" | "supabase";
-  private secondaryName: "appwrite" | "supabase";
+  private db: DBInterface;
 
-  constructor(primaryProvider: "appwrite" | "supabase" = "appwrite") {
-    this.primaryName = primaryProvider;
-    this.secondaryName = primaryProvider === "appwrite" ? "supabase" : "appwrite";
-    this.primary = primaryProvider === "appwrite" ? new AppwriteAdapter() : new SupabaseAdapter();
-    this.secondary = primaryProvider === "appwrite" ? new SupabaseAdapter() : new AppwriteAdapter();
+  constructor() {
+    this.db = new AppwriteAdapter();
   }
 
   async execute<T>(
     operation: (db: DBInterface) => Promise<T>,
-    isWriteOperation: boolean = false,
-    queryType?: string
+    _isWriteOperation: boolean = false,
+    _queryType?: string
   ): Promise<T> {
     try {
-      // Try primary first
-      const result = await operation(this.primary);
-
-      // If it's a write operation, mirror to secondary (async)
-      if (isWriteOperation) {
-        (async () => {
-          try {
-            await operation(this.secondary);
-          } catch (error) {
-            console.warn(`[DB Mirror] Failed to mirror to secondary:`, error);
-          }
-        })();
-      }
-
-      return result;
-    } catch (error: any) {
-      // Check for retryable errors (429 Rate Limit, 503 Unavailable, etc.)
-      const shouldRetry =
-        error.message?.includes("429") ||
-        error.message?.includes("503") ||
-        error.code === 429 ||
-        error.code === 503 ||
-        error.status === 429 ||
-        error.status === 503;
-
-      if (shouldRetry) {
-        console.warn(`[DB Failover] Primary failed, switching to secondary`);
-        
-        // Log failover event to system_metrics
-        try {
-          await this.primary.logSystemEvent("error", `${this.primaryName} failed, using ${this.secondaryName}`, {
-            provider_failed: this.primaryName,
-            fallback_used_at: new Date().toISOString(),
-            query_type: queryType,
-            error: error.message,
-          });
-        } catch (logError) {
-          console.warn(`[DB Failover] Failed to log event:`, logError);
-        }
-        
-        // Try secondary
-        return await operation(this.secondary);
-      }
-
-      // Re-throw non-retryable errors
+      // Only use Appwrite (no failover, no mirroring)
+      return await operation(this.db);
+    } catch (error) {
+      console.error(`[DB] Error executing operation:`, error);
       throw error;
     }
   }
 
-  // Convenience methods with auto-failover
+  // Convenience method (Appwrite only)
   getDB(): DBInterface {
-    // Create a proxy to wrap all methods with failover logic
     const self = this;
     return new Proxy({} as DBInterface, {
       get(_target, prop) {
-        if (typeof (self.primary as any)[prop] === "function") {
+        if (typeof (self.db as any)[prop] === "function") {
           return async (...args: any[]) => {
             const methodName = prop as keyof DBInterface;
             const isWrite =
@@ -506,13 +458,13 @@ class DatabaseFactory {
             );
           };
         }
-        return (self.primary as any)[prop];
+        return (self.db as any)[prop];
       },
     });
   }
 }
 
 // Export the factory and instance
-const factory = new DatabaseFactory("appwrite");
+const factory = new DatabaseFactory();
 export const db = factory.getDB();
 export { DatabaseFactory, AppwriteAdapter, SupabaseAdapter };
