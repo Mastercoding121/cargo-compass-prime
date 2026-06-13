@@ -14,9 +14,39 @@ import {
 } from "lucide-react";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { FreightModalsRow } from "@/components/freight/FreightModals";
-import { fetchProducts } from "@/lib/appwrite";
 import { useEffect, useState } from "react";
 import { type AppwriteProduct } from "@/lib/appwrite";
+
+interface ApiProduct {
+  id: string;
+  title: string;
+  description: string;
+  priceNGN: number;
+  costCNY: number;
+  imageUrl: string;
+  sourceType: 'preorder';
+  weightKg: number;
+}
+
+function convertApiToAppwriteProduct(p: ApiProduct): AppwriteProduct {
+  return {
+    $id: p.id,
+    $createdAt: new Date().toISOString(),
+    $updatedAt: new Date().toISOString(),
+    $permissions: [],
+    $databaseId: "api-db",
+    $collectionId: "products",
+    product_id: p.id,
+    title_english: p.title,
+    image_url: p.imageUrl,
+    original_1688_link: `https://1688.com/item/${p.id}`,
+    price_yuan: p.costCNY,
+    price_naira: p.priceNGN,
+    moq: 1,
+    sales_volume: 100,
+    category: "General",
+  };
+}
 
 export const Route = createFileRoute("/")({
   validateSearch: (search) => ({
@@ -54,9 +84,13 @@ function Landing() {
     async function load() {
       setLoading(true);
       try {
-        const result = await fetchProducts({ page: currentPage, limit: PAGE_SIZE });
-        setProducts(result.products);
-        setTotal(result.total);
+        const response = await fetch('/api/sourcing/live');
+        const data = await response.json();
+        if (data.success) {
+          const convertedProducts = data.products.map(convertApiToAppwriteProduct);
+          setProducts(convertedProducts);
+          setTotal(data.products.length);
+        }
       } catch (error) {
         console.error("Error loading products:", error);
       } finally {
