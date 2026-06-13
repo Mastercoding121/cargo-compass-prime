@@ -5,13 +5,20 @@ const EXCHANGE_RATE_CNY_TO_NGN = 215; // 1 CNY = 215 NGN
 const AIR_FREIGHT_PER_KG_USD = 8.5;   // $8.50 USD per Kg
 const NGN_PER_USD = 1550;             // 1 USD = 1,550 NGN
 
-// Type definitions for API response
-interface MarketplaceProduct {
+// Type definitions for RapidAPI response
+interface RapidAPIResponse {
+  data?: {
+    items?: RapidAPIProduct[];
+  };
+}
+
+interface RapidAPIProduct {
+  offerId?: string | number;
   id?: string | number;
+  subject?: string;
   title?: string;
-  price?: number | string;
+  price?: string;
   imageUrl?: string;
-  thumbnail?: string;
 }
 
 interface MappedProduct {
@@ -27,67 +34,59 @@ interface MappedProduct {
 
 export async function GET() {
   try {
-    // 1. Check for MARKETPLACE_API_KEY
-    const API_KEY = process.env.MARKETPLACE_API_KEY;
-    if (!API_KEY) {
-      console.warn('MARKETPLACE_API_KEY is missing! Proceeding with unauthenticated request.');
-    }
-
-    // 2. Fetch from the marketplace API bridge endpoint with cache revalidation (3600s = 1 hour)
-    const targetUrl = 'https://api.parse.bot/v1/1688/search_products?query=musical+instruments&page=1';
+    // Fetch from RapidAPI endpoint with cache revalidation (3600s = 1 hour)
+    const targetUrl = 'https://1688-product2.p.rapidapi.com/1688/shop/items?member_id=b2b-30949146618ee80&page_size=12&page=1';
     const response = await fetch(targetUrl, {
       headers: {
-        'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache',
-        ...(API_KEY ? { 'Authorization': `Bearer ${API_KEY}` } : {}),
+        'x-rapidapi-key': '20c0627a2fmshbb5438e9be896fcp143339jsn11600c604ceb',
+        'x-rapidapi-host': '1688-product2.p.rapidapi.com',
+        'Content-Type': 'application/json',
       },
       next: { revalidate: 3600 }, // Cache for 1 hour
     });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch from marketplace API');
+      throw new Error('Failed to fetch from RapidAPI');
     }
 
-    const scrapedData: MarketplaceProduct[] = await response.json();
+    const apiResponse: RapidAPIResponse = await response.json();
+    const scrapedData = apiResponse?.data?.items || [];
 
-    // 3. Process and map the data
+    // Process and map the data
     const dynamicCatalog = scrapedData
-      .slice(0, 12) // Limit to top 12 primary products
-      .map((item: MarketplaceProduct): MappedProduct => {
-        // Safely extract cost in CNY, default to 50 if missing/corrupt
+      .map((item: RapidAPIProduct): MappedProduct => {
+        // Safely extract cost in CNY from item.price string, default to 50 if missing/corrupt
         let rawCostCNY: number;
-        if (typeof item.price === 'number') {
-          rawCostCNY = item.price;
-        } else if (typeof item.price === 'string') {
+        if (typeof item.price === 'string') {
           rawCostCNY = parseFloat(item.price.replace(/[^\d.]/g, ''));
+        } else if (typeof item.price === 'number') {
+          rawCostCNY = item.price;
         } else {
           rawCostCNY = 50;
         }
-        // Fallback if parsed value is NaN
         if (isNaN(rawCostCNY)) {
           rawCostCNY = 50;
         }
 
-        // Calculate baseline product factory cost in local currency
+        // Calculate base cost and shipping
         const baseCostNGN = rawCostCNY * EXCHANGE_RATE_CNY_TO_NGN;
-
-        // Fixed estimated weight
         const estimatedWeight = 2.5;
         const estimatedShippingNGN = estimatedWeight * AIR_FREIGHT_PER_KG_USD * NGN_PER_USD;
-
-        // Final customer presentation price including 15% markup, rounded up
         const calculatedListingPrice = Math.ceil((baseCostNGN + estimatedShippingNGN) * 1.15);
 
-        // Map to our UI state contract
+        // Map to frontend structure
+        const rawTitle = (item.subject || item.title || 'Untitled Product');
+        const trimmedTitle = rawTitle.trim().substring(0, 60);
+
         return {
-          id: `1688-${item.id || 'unknown'}`,
-          title: item.title || 'Untitled Product',
-          description: "Factory Procurement Option. Sourced directly from verified international supplier network.",
+          id: `1688-${item.offerId || item.id || 'unknown'}`,
+          title: trimmedTitle,
+          description: "Factory Sourced Item",
           priceNGN: calculatedListingPrice,
           costCNY: rawCostCNY,
-          imageUrl: item.imageUrl || item.thumbnail || '',
+          imageUrl: item.imageUrl || '',
           sourceType: 'preorder',
-          weightKg: estimatedWeight,
+          weightKg: 2.5,
         };
       });
 
