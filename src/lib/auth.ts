@@ -15,31 +15,28 @@ const KEY = "ngh_session_v1";
 export async function getSession(): Promise<SessionUser | null> {
   if (typeof window === "undefined") return null;
   try {
-    // First try Supabase auth
-    const { data, error } = await supabase.auth.getUser();
-    if (error) {
-      // Fallback to localStorage mock
-      const raw = window.localStorage.getItem(KEY);
-      return raw ? (JSON.parse(raw) as SessionUser) : null;
-    }
-    if (data?.user) {
-      // Fetch profile from Supabase to get role and handleId
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", data.user.id)
-        .single();
-      if (!profileError && profile) {
-        return {
-          id: profile.id,
-          email: profile.email,
-          name: profile.name || profile.email.split("@")[0],
-          role: profile.role as UserRole,
-          handleId: profile.handle_id,
-        };
+    // First try Supabase auth only if we have a client
+    if (supabase) {
+      const { data, error } = await supabase.auth.getUser();
+      if (!error && data?.user) {
+        // Fetch profile from Supabase to get role and handleId
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", data.user.id)
+          .single();
+        if (!profileError && profile) {
+          return {
+            id: profile.id,
+            email: profile.email,
+            name: profile.name || profile.email.split("@")[0],
+            role: profile.role as UserRole,
+            handleId: profile.handle_id,
+          };
+        }
       }
     }
-    // Fallback to mock
+    // Fallback to localStorage mock
     const raw = window.localStorage.getItem(KEY);
     return raw ? (JSON.parse(raw) as SessionUser) : null;
   } catch {
@@ -56,7 +53,9 @@ export function setSession(u: SessionUser) {
 export function clearSession() {
   window.localStorage.removeItem(KEY);
   window.dispatchEvent(new Event("ngsd:auth"));
-  supabase.auth.signOut();
+  if (supabase) {
+    supabase.auth.signOut();
+  }
 }
 
 export function mockLogin(email: string): SessionUser {
