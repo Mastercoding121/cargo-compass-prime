@@ -138,8 +138,15 @@ interface ProductCardProps {
 function ProductCard({ product, appwriteProduct }: ProductCardProps) {
   const [qty, setQty] = useState(product.moq);
   const [open, setOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const navigate = useNavigate();
   const ngn = appwriteProduct.price_naira;
+
+  // Fallback image URL
+  const fallbackImageUrl = "https://placehold.co/400x400/111827/ffffff/png?text=Product";
+  
+  // Get valid image URL
+  const imageUrl = !imageError && appwriteProduct.image_url ? appwriteProduct.image_url : fallbackImageUrl;
 
   function handleAdd() {
     const session = getSession();
@@ -172,9 +179,10 @@ function ProductCard({ product, appwriteProduct }: ProductCardProps) {
     >
       <div className="aspect-square bg-muted overflow-hidden">
         <img
-          src={appwriteProduct.image_url}
+          src={imageUrl}
           alt={appwriteProduct.title_english}
           loading="lazy"
+          onError={() => setImageError(true)}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
       </div>
@@ -213,8 +221,9 @@ function ProductCard({ product, appwriteProduct }: ProductCardProps) {
             <div className="space-y-3">
               <div className="flex gap-3">
                 <img
-                  src={appwriteProduct.image_url}
+                  src={imageUrl}
                   alt=""
+                  onError={() => setImageError(true)}
                   className="size-20 rounded-md object-cover border border-border"
                 />
                 <div className="flex-1 min-w-0">

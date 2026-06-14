@@ -61,8 +61,15 @@ function parsePrice(priceStr?: string): number {
 export const Route = createFileRoute("/api/sourcing/live")({
   async loader({ request }: LoaderFunctionArgs) {
     try {
-      // Get API key from environment variable if available
-      const API_KEY = process.env.PARSEBOT_API_KEY || "20c0627a2fmshbb5438e9be896fcp143339jsn11600c604ceb";
+      // Log variable status for debugging
+      console.log("📦 Active Sourcing Variable Status:", !!process.env.PARSE_API_KEY);
+      
+      // Get API key with fallback chain
+      const API_KEY = 
+        process.env.PARSEBOT_API_KEY || 
+        process.env.PARSE_API_KEY || 
+        process.env.MARKETPLACE_API_KEY || 
+        "20c0627a2fmshbb5438e9be896fcp143339jsn11600c604ceb";
       
       // Fetch all products in parallel
       const fetchPromises = OFFER_IDS.map(async (offerId) => {
